@@ -1,0 +1,155 @@
+﻿@model Product
+
+@{
+    ViewBag.Title = $"{ViewBag.Operation}";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 600px;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin: auto;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-weight: bold;
+        color: #555;
+    }
+
+    .form-control {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .form-check {
+        margin-bottom: 10px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        transition: background 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    .btn-outline-dark {
+        border: 1px solid #333;
+        color: #333;
+        transition: background 0.3s ease;
+    }
+
+        .btn-outline-dark:hover {
+            background-color: #333;
+            color: white;
+        }
+
+    .row {
+        margin-top: 15px;
+    }
+
+    .form-check-input {
+        margin-right: 10px;
+    }
+</style>
+
+<div class="container">
+    <h1>@ViewBag.Operation Menu Item</h1>
+
+    <form asp-action="AddEdit" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="ProductId" />
+        <input type="hidden" asp-for="CategoryId" />
+
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" name="Name" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <input asp-for="Description" class="form-control" name="Description" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" class="form-control" name="Price" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Stock"></label>
+            <input asp-for="Stock" class="form-control" name="Stock" />
+            <span asp-validation-for="Stock" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="imageUpload">Upload Image</label>
+            <input type="file" class="form-control" id="ImageUpload" name="ImageFile" asp-for="ImageFile" />
+        </div>
+
+        <div class="row">
+            <div class="col">
+                @foreach (Category category in ViewBag.Categories)
+                {
+                    <div class="form-check">
+                        @{
+                            bool isChecked = Model.CategoryId == category.CategoryId;
+                        }
+                        <input type="radio" class="form-check-input" id="@category.CategoryId" name="catId" value="@category.CategoryId" @(isChecked ? "checked" : "") /> @category.Name
+                    </div>
+
+                }
+            </div>
+
+        <div class="col">
+            <h5>Ingredients</h5>
+            @foreach (Ingredient ingredient in ViewBag.Ingredients)
+            {
+                <div class="form-check">
+                    @{
+                        bool isChecked = Model.ProductIngredients != null && Model.ProductIngredients.Any(x => x.IngredientId == ingredient.IngredientId);
+                    }
+                    <input type="checkbox" class="form-check-input" id="@ingredient.IngredientId" name="ingredientIds" value="@ingredient.IngredientId" @(isChecked ? "checked" : "") />
+                    <label class="form-check-label" for="@ingredient.IngredientId">@ingredient.Name</label>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button asp-action="Index" asp-controller="Product" class="btn btn-outline-dark">Cancel</button>
+        </div>
+    </form>
+</div>
